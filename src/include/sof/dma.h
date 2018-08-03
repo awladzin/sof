@@ -240,7 +240,7 @@ static inline int dma_stop(struct dma *dma, int channel)
 	return dma->ops->stop(dma, channel);
 }
 
-static inline int dma_copy(struct dma *dma, int channel, int bytes)
+static inline int dma_copy(struct dma *dma, int channel, int bytes, int commit)
 {
 	return dma->ops->copy(dma, channel, bytes);
 }

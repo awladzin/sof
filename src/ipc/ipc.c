@@ -379,9 +379,11 @@ int ipc_parse_page_descriptors(uint8_t *page_table,
 			       uint32_t direction)
 {
 	int i;
+	int err;
 	uint32_t idx;
 	uint32_t phy_addr;
-	struct dma_sg_elem *e;
+	uint32_t page_size;
+	struct dma_sg_elem_array config;
 
 	/* the ring size may be not multiple of the page size, the last
 	 * page may be not full used. The used size should be in range
@@ -404,10 +406,17 @@ int ipc_parse_page_descriptors(uint8_t *page_table,
 		else
 			phy_addr <<= 12;
 		phy_addr &= 0xfffff000;
+
+		/* the last page may be not full used */
+		if (i == (ring->pages - 1))
+			page_size = ring->size - HOST_PAGE_SIZE * i;
+		else
+			page_size = HOST_PAGE_SIZE;
 		/* allocate new host DMA elem and add it to our list */
 		//e = rzalloc(RZONE_RUNTIME, SOF_MEM_CAPS_RAM, sizeof(*e));
-		err = dma_sg_alloc(&config.elem_array, config.direction,
-				elem_num, elem_size, elem_addr, 0);
+		err = dma_sg_alloc(&config, direction,
+				ring->pages, page_size, (uintptr_t)phy_addr,
+				(uintptr_t)NULL);
 		if (err < 0)
 			return err;
 	}

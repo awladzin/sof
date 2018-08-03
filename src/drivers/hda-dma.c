@@ -119,7 +119,7 @@ static inline void hda_update_bits(struct dma *dma, uint32_t chan,
 }
 
 /* notify DMA to copy bytes */
-static int hda_dma_copy(struct dma *dma, int channel, int bytes, int commit)
+static int hda_dma_copy(struct dma *dma, int channel, int bytes)
 {
 	uint32_t flags;
 	struct dma_pdata *p = dma_get_drvdata(dma);
